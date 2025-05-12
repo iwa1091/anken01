@@ -1,3 +1,5 @@
 vendor/
 node_modules/
 .env
+docker/mysql/data/
+docker/mysql/data/#innodb_temp/
