@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\User;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use App\Actions\Fortify\CreateNewUser;
+
+class FortifyServiceProvider extends ServiceProvider
+{
+    /**
+     * Fortify の設定をブート処理内で定義
+     */
+    public function boot()
+    {
+        Fortify::ignoreRoutes();
+        // **ビューの設定**
+        Fortify::loginView(fn () => view('auth.login'));
+        Fortify::registerView(fn () => view('auth.register'));
+        Fortify::requestPasswordResetLinkView(fn () => view('auth.forgot-password'));
+        Fortify::resetPasswordView(fn () => view('auth.reset-password'));
+        Fortify::verifyEmailView(fn () => view('auth.verify-email'));
+
+        // **ユーザー登録処理をクラスとして指定**
+        Fortify::createUsersUsing(CreateNewUser::class);
+
+        // **ログイン処理のカスタマイズ**
+        Fortify::authenticateUsing(function (Request $request) {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+
+            $user = User::where('email', $credentials['email'])->first();
+
+            if (!$user || !Hash::check($credentials['password'], $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => __('ログイン情報が正しくありません'),
+                ]);
+            }
+
+            return $user;
+        });
+
+    }
+}

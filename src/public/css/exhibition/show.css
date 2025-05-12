@@ -1,0 +1,131 @@
+/* show.css */
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.content__form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.line {
+    display: block;
+    height: 1px;
+    background-color: #ccc;
+    margin: 0 0 20px;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    width: auto;
+    padding: 10px;
+    background-color: #fff;
+    border: 2px solid red;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    color: #ff6f61;
+    cursor: pointer;
+}
+
+.dashed-border {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25vh;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+}
+
+.custom-file-upload input[type="file"] {
+    display: none;
+}
+
+.category-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.category-label span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border: 1px solid #f36f6f;
+    border-radius: 20px;
+    background-color: #fff;
+    color: #f36f6f;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.category-label input[type="checkbox"] {
+    opacity: 0;
+    /*  非表示にするが、チェック可能にする */
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* チェックされたときに `label` 全体の背景色を変更 */
+.category-label input[type="checkbox"]:checked+span {
+    background-color: red;
+    color: #fff;
+    border-color: red;
+}
+
+.price-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.currency {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.price-wrapper input {
+    padding-left: 30px;
+    height: 40px;
+    font-size: 16px;
+}
+
+.contact-form__error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+.form-button {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #ff6f61;
+    /* ボタンの背景色 */
+    color: #fff;
+    /* 文字色 */
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* ボタンをクリック/ホバーしたときのスタイル */
+.form-button:hover {
+    background-color: #d9534f;
+}

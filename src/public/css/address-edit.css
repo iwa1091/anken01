@@ -1,0 +1,60 @@
+/* address-edit.css */
+
+/* コンテナ中央寄せと最大幅設定 */
+.container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+/* 見出し中央寄せ */
+.container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 40px;
+    color: #000;
+    font-weight: bold;
+}
+
+/* 各フォームグループの余白 */
+.form-group {
+    margin-bottom: 30px;
+}
+
+/* エラーメッセージ（バリデーション） */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* テキストボックス */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* 更新ボタン */
+.btn.btn-success {
+    background-color: #ff6f61; /* ボタン色（画像と一致） */
+    color: #fff;
+    border: none;
+    padding: 14px;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 40px auto 0;
+    transition: background-color 0.3s ease;
+}
+
+.btn.btn-success:hover {
+    background-color: #e65b50;
+}

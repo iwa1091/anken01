@@ -1,0 +1,2 @@
+RewriteCond %{REQUEST_METHOD} !^(GET|POST|PUT|DELETE)$
+RewriteRule ^ index.php [L]

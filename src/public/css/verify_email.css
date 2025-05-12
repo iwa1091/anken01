@@ -1,0 +1,61 @@
+/* メール認証画面のCSS */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 0 20px;
+}
+
+/* メッセージ */
+.container p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    margin: 16px 0;
+}
+
+/* ボタン共通スタイル */
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.3s;
+}
+
+/* 認証ボタン */
+.btn-primary {
+    background-color: #e0e0e0;
+    color: #000;
+    border-color: #aaa;
+}
+
+.btn-primary:hover {
+    background-color: #d5d5d5;
+}
+
+/* 再送ボタン */
+.btn-secondary {
+    background-color: transparent;
+    color: #007bff;
+    border: none;
+    font-weight: normal;
+    font-size: 14px;
+    padding: 0;
+}
+
+.btn-secondary:hover {
+    text-decoration: underline;
+}

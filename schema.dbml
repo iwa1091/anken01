@@ -1,0 +1,81 @@
+// Usersテーブル
+Table users {
+  id bigint [pk]
+  name varchar(255)
+  email varchar(255) [unique]
+  password varchar(255)
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Itemsテーブル
+Table items {
+  id bigint [pk]
+  name varchar(255)
+  price bigint
+  description text
+  img_url varchar(255)
+  condition varchar(255)
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Purchasesテーブル
+Table purchases {
+  id bigint [pk]
+  user_id bigint [ref: > users.id]
+  item_id bigint [ref: > items.id]
+  payment_method varchar(50)
+  address_id bigint [ref: > addresses.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Addressesテーブル
+Table addresses {
+  id bigint [pk]
+  user_id bigint [ref: > users.id]
+  postal_code varchar(8)
+  address text
+  building_name varchar(255)
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Categoriesテーブル
+Table categories {
+  id bigint [pk]
+  name varchar(100)
+}
+
+// Item_Category テーブル（多対多リレーション用）
+Table item_category {
+  item_id bigint [pk, ref: > items.id]
+  category_id bigint [pk, ref: > categories.id]
+}
+
+// Commentsテーブル
+Table comments {
+  id bigint [pk]
+  item_id bigint [ref: > items.id]
+  user_id bigint [ref: > users.id]
+  content text
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Likesテーブル
+Table likes {
+  id bigint [pk]
+  item_id bigint [ref: > items.id]
+  user_id bigint [ref: > users.id]
+}
+
+// Exhibitionsテーブル（出品関連）
+Table exhibitions {
+  id bigint [pk]
+  item_id bigint [ref: > items.id]
+  user_id bigint [ref: > users.id]
+  created_at timestamp
+  updated_at timestamp
+}
