@@ -22,17 +22,25 @@ class Authenticate extends Middleware
         }
     }
 
-    
-
-   public function handle($request, Closure $next)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  array  ...$guards
+     * @return mixed
+     */
+    public function handle($request, Closure $next, ...$guards)
     {
         Log::info(' Authenticate ミドルウェアが実行されました！');
+
         if (!Auth::check()) {
             Log::warning(' ユーザー未認証 → ログインページへリダイレクト');
             return redirect()->route('login');
         }
+
         Log::info(' ユーザー認証OK → 次の処理へ進みます！');
-        
+
         return $next($request);
     }
 }
