@@ -38,6 +38,24 @@ class Item extends Model
         return $this->hasOne(Exhibition::class);
     }
 
+
+    /**
+     * このアイテムを購入している出品情報との1対1のリレーション
+     *
+     * 例: 購入した購入した商品の場合、商品が購入されたデータ（Purchase）と関連づけています。
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class);
+    }
+
+    public function isSold()
+    {
+        return $this->purchase()->exists();
+    }
+
     /**
      * アイテムに対するコメントとの1対多のリレーション
      *
@@ -74,4 +92,6 @@ class Item extends Model
     {
         return $this->belongsToMany(Category::class, 'item_categories', 'item_id', 'category_id');
     }
+
+
 }

@@ -10,13 +10,24 @@
 
     <!-- 切り替えボタン -->
     <div class="toggle-buttons">
-        <a href="{{ route('items.index') }}" class="toggle-button {{ ($activeTab ?? 'recommend') === 'recommend' ? 'active' : '' }}">おすすめ</a>
-        <a href="{{ route('items.mylist') }}" class="toggle-button {{ ($activeTab ?? 'recommend') === 'mylist' ? 'active' : '' }}">マイリスト</a>
+        <a href="{{ route('items.index') }}"
+           class="toggle-button {{ ($activeTab ?? 'recommend') === 'recommend' ? 'active' : '' }}">
+           おすすめ
+        </a>
+        <a href="{{ route('items.mylist') }}"
+           class="toggle-button {{ ($activeTab ?? 'recommend') === 'mylist' ? 'active' : '' }}">
+           マイリスト
+        </a>
     </div>
+
+    <!-- メッセージ表示 -->
+    @if (!empty($message))
+        <div class="alert alert-warning">{{ $message }}</div>
+    @endif
 
     <!-- 商品リスト -->
     <div class="item-list">
-        @if (isset($items) && count($items) > 0)
+        @if (!empty($items) && count($items) > 0)
             @foreach ($items as $item)
                 <div class="item">
                     <a href="{{ route('items.detail', ['item_id' => $item->id]) }}" class="item-link">
@@ -29,7 +40,7 @@
                     </a>
                     <div class="item-details">
                         <p class="item-price">¥{{ number_format($item->price) }}</p>
-                        @if ($item->is_sold)
+                        @if ($item->issold())
                             <p class="item-sold">Sold</p>
                         @endif
                     </div>

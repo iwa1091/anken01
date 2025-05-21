@@ -11,15 +11,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CommentController;
-
-// Fortify のメール認証ルートを追加！
-//use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
-// ↓↓↓ FortifyのVerifyEmailControllerは使わないので削除！
-// use Laravel\Fortify\Http\Controllers\VerifyEmailController;
-// ↓↓↓ 自作のVerifyEmailControllerを使う
 use App\Http\Controllers\VerifyEmailController;
 use Laravel\Fortify\Http\Controllers\ResendVerificationEmailController;
 
+// ----------------------------------------------------
+// メール認証ルート
+// ----------------------------------------------------
 Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
     ->middleware(['auth', 'signed'])
     ->name('verification.verify');
@@ -37,7 +34,6 @@ Route::post('/email/verification-notification', function () {
 // ----------------------------------------------------
 // Fortify に対応した認証関連ルート
 // ----------------------------------------------------
-
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -51,26 +47,29 @@ Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])-
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 
 // ----------------------------------------------------
-// 商品関連ルート
+// 商品関連ルート（未認証ユーザーもアクセス可）
 // ----------------------------------------------------
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', [ItemController::class, 'index'])->name('items.index');
-});
-Route::get('/?tab=mylist', [ItemController::class, 'index'])->middleware('auth')->name('items.mylist');
+Route::get('/', [ItemController::class, 'index'])->name('items.index');
+Route::get('/items', [ItemController::class, 'index'])->name('items.top');
 Route::get('/item/{item_id}', [ItemController::class, 'detail'])->name('items.detail');
 Route::get('/items/search', [ItemController::class, 'search'])->name('items.search');
 Route::get('/items/recommend', [ItemController::class, 'recommend'])->name('items.recommend');
-Route::post('/item/like/{item_id}', [ItemController::class, 'like'])->name('item.like');
-Route::post('/item/comment/{item_id}', [CommentController::class, 'store'])->name('item.comment');
+
+// 「マイリスト」や「いいね」「コメント」は認証ユーザー専用
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/?tab=mylist', [ItemController::class, 'index'])->name('items.mylist');
+    Route::post('/item/like/{item_id}', [ItemController::class, 'like'])->name('item.like');
+    Route::post('/item/comment/{item_id}', [CommentController::class, 'store'])->name('item.comment');
+});
 
 // ----------------------------------------------------
-// 出品関連ルート
+// 出品関連ルート（要ログイン）
 // ----------------------------------------------------
 Route::get('/sell', [ExhibitionController::class, 'create'])->middleware('auth')->name('exhibition.create');
 Route::post('/sell', [ExhibitionController::class, 'store'])->middleware('auth')->name('exhibition.store');
 
 // ----------------------------------------------------
-// 購入関連ルート
+// 購入関連ルート（要ログイン）
 // ----------------------------------------------------
 Route::get('/purchase/{item_id}', [PurchaseController::class, 'show'])->middleware('auth')->name('purchase.show');
 Route::post('/purchase/{item_id}', [PurchaseController::class, 'store'])->middleware('auth')->name('purchase.store');
@@ -78,7 +77,7 @@ Route::get('/purchase/address/{item_id}', [AddressController::class, 'edit'])->m
 Route::put('/purchase/address/{item_id}', [AddressController::class, 'updateAddress'])->middleware('auth')->name('address.update');
 
 // ----------------------------------------------------
-// ユーザー関連ルート
+// ユーザー関連ルート（要ログイン）
 // ----------------------------------------------------
 Route::get('/mypage', [UserController::class, 'mypage'])->middleware(['auth','verified'])->name('mypage.profile');
 Route::get('/profile/edit', [UserController::class, 'editProfile'])->middleware(['auth', 'verified'])->name('profile.edit');

@@ -81,8 +81,13 @@ h1 {
 }
 
 .item-sold {
-    color: red;
-    font-size: 14px;
+    color: white;
+    background-color: red;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 4px;
 }
 
 /* レスポンシブ対応 */

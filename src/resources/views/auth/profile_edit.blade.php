@@ -7,19 +7,10 @@
 @section('content')
 <div class="container">
     <h1>プロフィール設定</h1>
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
 
     <div class="content-form">
         <!-- フォーム開始 -->
-        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" novalidate>
             @csrf
             @method('PUT')
 
@@ -35,11 +26,11 @@
                     <div class="file-select-area">
                         <label for="profile_image" class="custom-file-label">画像を選択する</label>
                         <input type="file" name="profile_image" id="profile_image" class="form-control hidden-file">
-                        @error('profile_image')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
+                @error('profile_image')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
             </div>
 
             <!-- ユーザー名 -->
