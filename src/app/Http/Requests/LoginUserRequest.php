@@ -3,44 +3,32 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginUserRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
-        return true; // 必要に応じてアクセス制御
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string|min:8',
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ];
     }
 
-    /**
-     * Get custom error messages for validation rules.
-     *
-     * @return array
-     */
-    public function messages()
+  public function authenticate()
     {
-        return [
-            'email.required' => 'メールアドレスを入力してください。',
-            'email.email' => '有効なメールアドレスを入力してください。',
-            'password.required' => 'パスワードを入力してください。',
-            'password.min' => 'パスワードは8文字以上で入力してください。',
-        ];
+        $credentials = $this->only('email', 'password');
+
+        if (!Auth::attempt($credentials, $this->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
     }
 }

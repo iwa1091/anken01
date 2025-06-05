@@ -6,30 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginUserRequest;
+
 
 class AuthenticatedSessionController extends Controller
 {
     /**
      * ログイン処理
      */
-    public function store(Request $request)
+    public function store(LoginUserRequest $request)
     {
-        // 入力値のバリデーション
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ], [
-            'email.required' => 'メールアドレスを入力してください。',
-            'email.email' => 'メールアドレスの形式が正しくありません。',
-            'password.required' => 'パスワードを入力してください。',
-        ]);
-
-        // 認証試行
-        if (!Auth::attempt($credentials)) {
-            throw ValidationException::withMessages([
-                'email' => __('ログイン情報が正しくありません'),
-            ]);
-        }
+        $request->authenticate();
 
         // セッションを再生成してセキュリティ強化
         $request->session()->regenerate();
@@ -47,6 +34,12 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'ログアウトしました！');
+        return redirect('/login')->with('success', 'ログアウトしました！');
     }
+
+    public function create()
+    {
+        return view('auth.login'); // resources/views/auth/login.blade.php を表示
+    }
+
 }

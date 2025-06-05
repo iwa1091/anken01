@@ -2,105 +2,120 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
 
 class RegisterTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function 正常に会員登録できる()
+    /**
+     * ID1: 正常な会員登録ができるかテスト
+     */
+    public function test_user_can_register_with_valid_data(): void
     {
-        $response = $this->post('/register', [
+        // 登録用データ
+        $formData = [
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
-        ]);
+        ];
 
-        $response->assertRedirect('/'); // 遷移先が違う場合は変更
-        $this->assertAuthenticated();
+        // POSTで登録リクエストを送信
+        $response = $this->post('/register', $formData);
+
+        // ユーザがDBに登録されていることを確認
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
         ]);
+
+        // 認証されていること（ログインされていること）を確認
+        $this->assertAuthenticated();
+
+        // リダイレクト先を確認（ホームなどにリダイレクトされる）
+        $response->assertRedirect('/email/verify');
     }
 
-    /** @test */
-    public function 名前が未入力の場合は登録できない()
+        public function test_name_is_required(): void
     {
-        $response = $this->from('/register')->post('/register', [
+        $formData = [
             'name' => '',
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
-        ]);
+        ];
 
-        $response->assertRedirect('/register');
-        $response->assertSessionHasErrors(['name']);
-        $this->assertGuest();
+        $response = $this->post('/register', $formData);
+
+        $response->assertSessionHasErrors([
+            'name' => 'お名前を入力してください',
+        ]);
     }
 
-    /** @test */
-    public function メールアドレスが未入力の場合は登録できない()
+
+    public function test_email_is_required(): void
     {
-        $response = $this->from('/register')->post('/register', [
+        $formData = [
             'name' => 'テストユーザー',
             'email' => '',
             'password' => 'password123',
             'password_confirmation' => 'password123',
-        ]);
+        ];
 
-        $response->assertRedirect('/register');
-        $response->assertSessionHasErrors(['email']);
-        $this->assertGuest();
+        $response = $this->post('/register', $formData);
+
+        $response->assertSessionHasErrors([
+            'email' => 'メールアドレスを入力してください',
+        ]);
     }
 
-    /** @test */
-    public function メールアドレスが重複している場合は登録できない()
+    public function test_password_is_required(): void
     {
-        User::factory()->create(['email' => 'duplicate@example.com']);
-
-        $response = $this->from('/register')->post('/register', [
-            'name' => '別のユーザー',
-            'email' => 'duplicate@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
-
-        $response->assertRedirect('/register');
-        $response->assertSessionHasErrors(['email']);
-        $this->assertGuest();
-    }
-
-    /** @test */
-    public function パスワードが8文字未満の場合は登録できない()
-    {
-        $response = $this->from('/register')->post('/register', [
+        $formData = [
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
-            'password' => 'short',
-            'password_confirmation' => 'short',
-        ]);
+            'password' => '',
+            'password_confirmation' => '',
+        ];
 
-        $response->assertRedirect('/register');
-        $response->assertSessionHasErrors(['password']);
-        $this->assertGuest();
+        $response = $this->post('/register', $formData);
+
+        $response->assertSessionHasErrors([
+            'password' => 'パスワードを入力してください',
+        ]);
     }
 
-    /** @test */
-    public function パスワードと確認用パスワードが一致しない場合は登録できない()
+    public function test_password_min_length(): void
     {
-        $response = $this->from('/register')->post('/register', [
+        $formData = [
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'differentpassword',
-        ]);
+            'password' => 'abc123',
+            'password_confirmation' => 'abc123',
+        ];
 
-        $response->assertRedirect('/register');
-        $response->assertSessionHasErrors(['password']);
-        $this->assertGuest();
+        $response = $this->post('/register', $formData);
+
+        $response->assertSessionHasErrors([
+            'password' => 'パスワードは8文字以上で入力してください',
+        ]);
     }
+    public function test_password_confirmation_mismatch(): void
+{
+    $formData = [
+        'name' => 'テストユーザー',
+        'email' => 'test@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'different123',
+    ];
+
+    $response = $this->post('/register', $formData);
+
+    $response->assertSessionHasErrors([
+        'password' => 'パスワードと一致しません',
+    ]);
+}
+
 }

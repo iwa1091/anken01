@@ -23,6 +23,7 @@ class Item extends Model
         'price',
         'img_url',
         'condition',
+        'brand'
     ];
 
 
@@ -55,6 +56,8 @@ class Item extends Model
     {
         return $this->purchase()->exists();
     }
+
+
 
     /**
      * アイテムに対するコメントとの1対多のリレーション

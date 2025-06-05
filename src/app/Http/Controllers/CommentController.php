@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CommentRequest; // CommentRequest をインポート
+use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Item;
@@ -13,7 +13,7 @@ class CommentController extends Controller
     /**
      * 商品へのコメントを投稿
      */
-    public function store(CommentRequest $request, $item_id) // CommentRequest を利用
+    public function store(CommentRequest $request, $item_id)
     {
         // ログインユーザーの ID を取得
         $user_id = Auth::id();

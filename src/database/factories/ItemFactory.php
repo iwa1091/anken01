@@ -9,7 +9,7 @@ class ItemFactory extends Factory
 {
     protected $model = Item::class;
 
-    public function definition()
+    public function definition(): array // 型ヒントを追加 (PHP 7.4+)
     {
         // 設計書に基づく商品データ一覧
         $items = [
@@ -19,6 +19,7 @@ class ItemFactory extends Factory
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Armani+Mens+Clock.jpg',
                 'condition' => '良好',
+                'brand' => 'Armani', // 【追加】ブランド名
             ],
             [
                 'name' => 'HDD',
@@ -26,6 +27,7 @@ class ItemFactory extends Factory
                 'description' => '高速で信頼性の高いハードディスク',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/HDD+Hard+Disk.jpg',
                 'condition' => '目立った傷や汚れなし',
+                'brand' => 'Western Digital', // 【追加】ブランド名
             ],
             [
                 'name' => '玉ねぎ3束',
@@ -33,6 +35,7 @@ class ItemFactory extends Factory
                 'description' => '新鮮な玉ねぎ3束のセット',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/iLoveIMG+d.jpg',
                 'condition' => 'やや傷や汚れあり',
+                'brand' => '国産', // 【追加】ブランド名
             ],
             [
                 'name' => '革靴',
@@ -40,6 +43,7 @@ class ItemFactory extends Factory
                 'description' => 'クラシックなデザインの革靴',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Leather+Shoes+Product+Photo.jpg',
                 'condition' => '状態が悪い',
+                'brand' => 'Regal', // 【追加】ブランド名
             ],
             [
                 'name' => 'ノートPC',
@@ -47,6 +51,7 @@ class ItemFactory extends Factory
                 'description' => '高性能なノートパソコン',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Living+Room+Laptop.jpg',
                 'condition' => '良好',
+                'brand' => 'Dell', // 【追加】ブランド名
             ],
             [
                 'name' => 'マイク',
@@ -54,6 +59,7 @@ class ItemFactory extends Factory
                 'description' => '高音質のレコーディング用マイク',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Music+Mic+4632231.jpg',
                 'condition' => '目立った傷や汚れなし',
+                'brand' => 'Shure', // 【追加】ブランド名
             ],
             [
                 'name' => 'ショルダーバッグ',
@@ -61,6 +67,7 @@ class ItemFactory extends Factory
                 'description' => 'おしゃれなショルダーバッグ',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Purse+fashion+pocket.jpg',
                 'condition' => 'やや傷や汚れあり',
+                'brand' => 'Coach', // 【追加】ブランド名
             ],
             [
                 'name' => 'タンブラー',
@@ -68,6 +75,7 @@ class ItemFactory extends Factory
                 'description' => '使いやすいタンブラー',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Tumbler+souvenir.jpg',
                 'condition' => '状態が悪い',
+                'brand' => 'Starbucks', // 【追加】ブランド名
             ],
             [
                 'name' => 'コーヒーミル',
@@ -75,13 +83,15 @@ class ItemFactory extends Factory
                 'description' => '手動のコーヒーミル',
                 'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Waitress+with+Coffee+Grinder.jpg',
                 'condition' => '良好',
+                'brand' => 'Hario', // 【追加】ブランド名
             ],
             [
                 'name' => 'メイクセット',
                 'price' => 2500,
                 'description' => '便利なメイクアップセット',
-                'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/%E5%A4%96%E5%87%BA%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%A2%E3%83%83%E3%83%95%E3%82%9A%E3%82%BB%E3%83%83%E3%83%88.jpg',
+                'img_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/%E5%A4%96%E5%87%BA%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%82%BB%E3%83%83%E3%83%88.jpg',
                 'condition' => '目立った傷や汚れなし',
+                'brand' => 'Shiseido', // 【追加】ブランド名
             ],
         ];
 

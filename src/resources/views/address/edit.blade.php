@@ -8,7 +8,7 @@
 <div class="container">
     <h2>住所の変更</h2>
 
-    <form method="POST" action="{{ route('address.update', ['item_id' => $item_id]) }}">
+    <form method="POST" action="{{ route('address.update', ['item_id' => $item_id]) }}" novalidate>
         @csrf
         @method('PUT')
 

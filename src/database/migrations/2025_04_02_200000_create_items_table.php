@@ -20,6 +20,7 @@ class CreateItemsTable extends Migration
             $table->text('description');            // 商品説明
             $table->string('img_url', 255);         // 商品画像のURL
             $table->string('condition', 255);       // 商品の状態・コンディション
+            $table->string('brand', 255)->nullable();           // ブランド名カラム
             $table->timestamps();                   // created_at と updated_at の自動生成
         });
     }

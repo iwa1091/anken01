@@ -28,18 +28,14 @@ class AddressController extends Controller
      * @param int $item_id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateAddress(Request $request, $item_id)
+    public function updateAddress(AddressRequest $request, $item_id)
     {
 
         // ログインユーザーの住所情報を取得または作成
         $user = Auth::user();
         $address = Address::updateOrCreate(
             ['user_id' => $user->id], // ユーザーに紐づく住所を検索
-            [
-                'postal_code' => $request->postal_code,
-                'address' => $request->address,
-                'building_name' => $request->building_name,
-            ]
+            $request->only(['postal_code', 'address', 'building_name'])
         );
 
         return redirect()->route('purchase.show', ['item_id' => $item_id])

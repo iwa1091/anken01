@@ -39,6 +39,9 @@ class ExhibitionController extends Controller
         if ($request->hasFile('image')) {
             $filePath = $request->file('image')->store('images', 'public');
             $validatedData['image'] = str_replace('public/', 'storage/', $filePath);
+        } else {
+        // 画像がアップロードされていない場合の仮画像パスを設定
+            $validatedData['image'] = 'storage/images/noimage.png';
         }
 
         $itemId = $request->input('item_id');
@@ -74,7 +77,7 @@ class ExhibitionController extends Controller
         $categoryIds = array_map('intval', (array) $validatedData['category']);
         $item->categories()->sync($categoryIds);
 
-        return redirect()->route('mypage.profile')->with('success', '商品を出品しました！');
+        return redirect()->route('mypage')->with('success', '商品を出品しました！');
     }
 
     // 商品検索機能

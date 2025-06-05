@@ -30,7 +30,7 @@ class StoreExhibitionRequest extends FormRequest
             'category' => 'required|array', // カテゴリー: 必須、配列
             'category.*' => 'exists:categories,id', // カテゴリIDがデータベースに存在することを確認
             'condition' => 'required|string|in:excellent,good,fair,poor', // 状態: 必須、限定された値
-            //'image' => 'required|image|mimes:jpeg,png|max:2048', // 商品画像: 必須、JPEGまたはPNG、最大2MB
+            //'image' => 'nullable|image|mimes:jpeg,png|max:2048', // 商品画像: 必須、JPEGまたはPNG、最大2MB
             //'item_id' => 'required|exists:items,id',
         ];
     }

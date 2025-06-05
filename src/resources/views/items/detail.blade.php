@@ -10,22 +10,26 @@
     <div class="left-content">
         <!-- 商品情報 -->
         <div class="item-image">
-            <img src="{{ $item->img_url }}" class="card-img-top" alt="{{ $item->name }}">
+            <img
+                src="{{ Str::startsWith($item->img_url, 'http') ? $item->img_url : asset('storage/' . $item->img_url) }}"
+                alt="{{ $item->name }}"
+                class="card-img-top"
+            >
         </div>
     </div>
     <div class="right-content">
         <!-- 商品名 -->
         <h2>{{ $item->name }}</h2>
-        <p class="item-text">ブランド {{ $item->brand_name }}</p>
+        <p class="item-text">{{ $item->brand }}</p>
         <p class="item-text">¥{{ number_format($item->price) }}（税込）</p>
         <div class="group">
         <!-- いいねボタン -->
             <div class="like-count__group">
                 <form method="POST" action="{{ route('item.like', ['item_id' => $item->id]) }}">
                 @csrf
-                    <img src="{{ asset('/images/star.png') }}"  alt="星の画像" class="img-star"/>
-                    <button type="submit" class="like-count">
-                        {{ $item->likes_count ?? 0 }}
+                    <button type="submit" class="like-button {{ $item->is_liked ? 'liked' : '' }}">
+                        <img src="{{ asset('/images/star.png') }}" alt="いいね" class="img-star">
+                        <span class="like-count">{{ $item->likes_count ?? 0 }}</span>
                     </button>
                 </form>
             </div>
@@ -60,10 +64,10 @@
                     <div class="profile-input-wrapper">
                         @if(isset($comment->user) && $comment->user->profile_image)
                             <img src="{{ asset('storage/' . $comment->user->profile_image) }}" alt="プロフィール画像" class="profile-image-preview">
-                            <p class="profile-input__user-name"><strong>{{ $comment->user->name ?? '未設定'}}</strong></p>
                         @else
                             <div class="profile-placeholder"></div>
                         @endif
+                        <p class="profile-input__user-name"><strong>{{ $comment->user->name ?? '未設定'}}</strong></p>
                     </div>
                     <div class="comments-list__item">
                         <p>{{ $comment->content }}</p>

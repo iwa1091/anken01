@@ -11,7 +11,11 @@
         <div class="purchase-left">
             <div class="container__top">
                 <div class="container__image">
-                    <img src="{{ $item->img_url }}" alt="{{ $item->name }}">
+                    <img
+                        src="{{ Str::startsWith($item->img_url, 'http') ? $item->img_url : asset('storage/' . $item->img_url) }}"
+                        alt="{{ $item->name }}"
+                        class="item-image"
+                    >
                 </div>
                 <div class="container__detail">
                     <h3>{{ $item->name }}</h3>
@@ -21,55 +25,55 @@
 
             <div class="line"></div>
 
-            <!-- 支払い方法選択 -->
+            <!-- 支払い方法選択フォーム（GET） -->
             <div class="payment-group">
-                <form method="POST" action="{{ route('purchase.store', ['item_id' => $item->id]) }}">
-                    @csrf
+                <form method="GET" action="{{ route('purchase.show', ['item_id' => $item->id]) }}">
                     <div class="payment-method">
                         <label for="payment">お支払い方法</label>
-                        <select name="payment" id="payment" required>
-                            <option value="" disabled selected>選択してください</option>
-                            <option value="credit" {{ old('payment') == 'credit' ? 'selected' : '' }}>カード支払い</option>
-                            <option value="convenience" {{ old('payment') == 'convenience' ? 'selected' : '' }}>コンビニ支払い</option>
+                        <select name="payment" id="payment" onchange="this.form.submit()" required>
+                            <option value="" disabled {{ request('payment') === null ? 'selected' : '' }}>選択してください</option>
+                            <option value="credit" {{ request('payment') == 'credit' ? 'selected' : '' }}>カード支払い</option>
+                            <option value="convenience" {{ request('payment') == 'convenience' ? 'selected' : '' }}>コンビニ支払い</option>
                         </select>
                         @error('payment')
                             <p class="error-text">{{ $message }}</p>
                         @enderror
                     </div>
+                </form>
 
-                    <div class="line"></div>
+                <div class="line"></div>
 
-                    <!-- 配送先情報 -->
-                    <div class="address-info">
-                        <div class="btn-group">
-                            <div>配送先</div>
-                            <div class="btn-secondary">
-                                <a href="{{ route('address.edit', ['item_id' => $item->id]) }}" class="btn">
-                                    変更する
-                                </a>
-                            </div>
-                        </div>
-                        <div class="address-group">
-                            <p>{{ Auth::user()->addresses()->first()->formatted_postal_code ?? '未設定'}}</p>
-                            <p>
-                                {{ Auth::user()->addresses()->first()->address ?? '未設定' }}
-                                {{ Auth::user()->addresses()->first()->building_name ?? '' }}
-                            </p>
-
-                            @error('address')
-                                <p class="error-text">{{ $message }}</p>
-                            @enderror
+                <!-- 配送先情報 -->
+                <div class="address-info">
+                    <div class="btn-group">
+                        <div>配送先</div>
+                        <div class="btn-secondary">
+                            <a href="{{ route('address.edit', ['item_id' => $item->id]) }}" class="btn">変更する</a>
                         </div>
                     </div>
+                    <div class="address-group">
+                        <p>{{ Auth::user()->addresses()->first()->formatted_postal_code ?? '未設定'}}</p>
+                        <p>
+                            {{ Auth::user()->addresses()->first()->address ?? '未設定' }}
+                            {{ Auth::user()->addresses()->first()->building_name ?? '' }}
+                        </p>
+                        @error('address')
+                            <p class="error-text">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
 
-                    <!-- ボタンを左側にも配置 -->
-                    <div class="btn-left-submit">
+                <!-- 購入実行フォーム（POST） -->
+                <div class="btn-left-submit">
+                    <form method="POST" action="{{ route('purchase.store', ['item_id' => $item->id]) }}">
+                        @csrf
+                        <input type="hidden" name="payment" value="{{ request('payment') }}">
                         @error('general_error')
                             <p class="error-text">{{ $message }}</p>
                         @enderror
                         <button type="submit" class="btn btn-success">購入する</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -85,7 +89,12 @@
                 <tr class="payment-table__row">
                     <td class="payment-table__item">
                         支払い方法
-                        <p id="selected-payment">{{ old('payment', $purchase->payment_method ?? '未選択') }}</p>
+                        <p id="selected-payment">
+                            @if(request('payment') === 'credit') カード支払い
+                            @elseif(request('payment') === 'convenience') コンビニ支払い
+                            @else 未選択
+                            @endif
+                        </p>
                     </td>
                 </tr>
             </table>
@@ -94,6 +103,3 @@
 </div>
 @endsection
 
-@section('js')
-<script src="{{ asset('js/purchase.js') }}"></script>
-@endsection

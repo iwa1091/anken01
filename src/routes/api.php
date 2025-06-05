@@ -20,6 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/products', [ItemController::class, 'apiIndex']);
+Route::get('/products', [ItemController::class, 'index']);
 
-Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);
+Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle'])->name('webhook.stripe');

@@ -8,13 +8,13 @@ class AddressRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // 認証チェックが必要なら適宜変更
+        return true;
     }
 
     public function rules()
     {
         return [
-            'postal_code' => 'nullable|string|max:8',
+            'postal_code' => ['nullable', 'regex:/^\d{7}$/'],
             'address' => 'required|string|max:255',
             'building_name' => 'nullable|string|max:255',
         ];
@@ -23,7 +23,7 @@ class AddressRequest extends FormRequest
     public function messages()
     {
         return [
-            'postal_code.max' => '郵便番号は8文字以内で入力してください。',
+            'postal_code.regex' => '郵便番号は7桁の半角数字で入力してください（例：1234567）。',
             'address.required' => '住所を入力してください。',
             'address.max' => '住所は255文字以内で入力してください。',
             'building_name.max' => '建物名は255文字以内で入力してください。',

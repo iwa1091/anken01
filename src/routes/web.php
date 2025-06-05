@@ -52,7 +52,7 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('p
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
 Route::get('/items', [ItemController::class, 'index'])->name('items.top');
 Route::get('/item/{item_id}', [ItemController::class, 'detail'])->name('items.detail');
-Route::get('/items/search', [ItemController::class, 'search'])->name('items.search');
+//Route::get('/items/search', [ItemController::class, 'search'])->name('items.search');
 Route::get('/items/recommend', [ItemController::class, 'recommend'])->name('items.recommend');
 
 // 「マイリスト」や「いいね」「コメント」は認証ユーザー専用
@@ -79,6 +79,7 @@ Route::put('/purchase/address/{item_id}', [AddressController::class, 'updateAddr
 // ----------------------------------------------------
 // ユーザー関連ルート（要ログイン）
 // ----------------------------------------------------
-Route::get('/mypage', [UserController::class, 'mypage'])->middleware(['auth','verified'])->name('mypage.profile');
+Route::get('/mypage', [UserController::class, 'mypage'])->middleware(['auth','verified'])->name('mypage');
 Route::get('/profile/edit', [UserController::class, 'editProfile'])->middleware(['auth', 'verified'])->name('profile.edit');
 Route::put('/profile/update', [UserController::class, 'updateProfile'])->middleware('auth')->name('profile.update');
+

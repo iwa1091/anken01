@@ -11,17 +11,58 @@ use App\Models\Purchase;
 
 class ItemController extends Controller
 {
-    // 商品検索機能
-    public function search(Request $request)
+    // 商品一覧表示機能（検索 + タブ切り替え含む）
+    public function index(Request $request)
     {
-        $query = $request->input('query');
+        $tab = $request->query('tab', 'recommend'); // 'recommend' or 'mylist'
+        $query = $request->query('query', '');      // 検索キーワード
+        $user = Auth::user();
+        $items = collect();
 
-        // 検索クエリで商品名部分一致検索
-        $items = Item::where('name', 'LIKE', '%' . $query . '%')->get();
+        if ($tab === 'mylist') {
+            // マイリストタブ：ログインかつメール認証済ユーザーのみ
+            if ($user && $user->email_verified_at !== null) {
+                $likedItemIds = Like::where('user_id', $user->id)->pluck('item_id');
+
+                $items = Item::where(function ($q) use ($likedItemIds, $query) {
+                    // いいね商品IDを含むか OR 検索キーワードに部分一致
+                    $q->whereIn('id', $likedItemIds);
+                    if ($query !== '') {
+                        $q->orWhere('name', 'LIKE', "%{$query}%");
+                    }
+                })
+                ->whereDoesntHave('exhibition', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })
+                ->with('exhibition.user')
+                ->get();
+            }
+        } else {
+            // おすすめタブ（未ログインでもOK）
+            $items = Item::when($query !== '', fn($q) => $q->where('name', 'LIKE', "%$query%"))
+                ->when($user, function ($q) use ($user) {
+                    $q->whereHas('exhibition', fn($subQ) => $subQ->where('user_id', '!=', $user->id));
+                })
+                ->with('exhibition.user')
+                ->get();
+        }
+
+        // 購入済み商品情報をロード
+        if ($items->isNotEmpty()) {
+            $items->load('purchase');
+        }
+
+        // 各商品に is_sold, is_liked 属性を追加
+        $items->each(function ($item) use ($user) {
+            $item->is_sold = $item->isSold();
+            $item->is_liked = $user
+                ? Like::where('user_id', $user->id)->where('item_id', $item->id)->exists()
+                : false;
+        });
 
         return view('items.index', [
             'items' => $items,
-            'activeTab' => 'search',
+            'activeTab' => $tab,
             'query' => $query,
         ]);
     }
@@ -44,6 +85,11 @@ class ItemController extends Controller
         $itemWithComments = $this->getItemWithCommentsCount($item_id);
         $itemWithCategories = $this->getItemWithCategories($item_id);
 
+        $user = Auth::user();
+        $itemWithComments->is_liked = $user
+            ? Like::where('user_id', $user->id)->where('item_id', $item_id)->exists()
+            : false;
+
         return view('items.detail', [
             'item' => $itemWithComments,
             'categories' => $itemWithCategories->categories,
@@ -62,71 +108,11 @@ class ItemController extends Controller
         $item->price = $request->input('product_price');
         $item->image = 'storage/' . $dir . '/' . $file_name;
         $item->description = $request->input('product_description');
+         $item->brand = $request->input('product_brand');
         $item->save();
 
         return redirect()->route('items.index')->with('success', '商品をアップロードしました！');
     }
-
-    // 商品一覧表示機能（トップ画面）
-    // 商品一覧表示機能（トップ画面）
-    public function index(Request $request)
-    {
-        $tab = $request->query('tab', 'recommend'); // デフォルトは 'recommend'
-        $query = $request->query('query', '');     // 検索キーワード
-        $user = Auth::user();
-
-        if ($tab === 'mylist') {
-            if ($user && $user->email_verified_at !== null) {
-                // いいねした商品IDを取得
-                $likedItemIds = Like::where('user_id', $user->id)->pluck('item_id');
-
-                // いいね商品かつ検索条件に合致する商品を取得
-                $items = Item::whereIn('id', $likedItemIds)
-                    ->when($query !== '', function ($q) use ($query) {
-                        $q->where('name', 'LIKE', '%' . $query . '%');
-                    })
-                    ->get();
-            } else {
-                $items = collect();
-            }
-        } else {
-            if ($user) {
-                // 自分が出品していない商品のみ取得
-                $items = Item::whereHas('exhibition', function ($query) use ($user) {
-                    $query->where('user_id', '!=', $user->id);
-                })
-                ->when($query !== '', function ($q) use ($query) {
-                    $q->where('name', 'LIKE', '%' . $query . '%');
-                })
-                ->with('exhibition.user')
-                ->get();
-            } else {
-                // 未認証ユーザーは全商品を検索条件付きで取得
-                $items = Item::when($query !== '', function ($q) use ($query) {
-                    $q->where('name', 'LIKE', '%' . $query . '%');
-                })
-                ->with('exhibition.user')
-                ->get();
-            }
-        }
-
-        // 購入済み判定を追加（空でなければ purchase を eager load）
-        if ($items->isNotEmpty()) {
-            $items->load('purchase');
-        }
-
-        // is_sold 属性を追加（ビューで使いやすく）
-        $items->each(function ($item) {
-            $item->is_sold = $item->isSold();
-        });
-
-        return view('items.index', [
-            'items' => $items,
-            'activeTab' => $tab,
-            'query' => $query,
-        ]);
-    }
-
 
     // いいね機能
     public function like(Request $request, $item_id)

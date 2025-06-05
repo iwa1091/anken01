@@ -13,14 +13,17 @@ use Stripe\Checkout\Session as CheckoutSession;
 
 class PurchaseController extends Controller
 {
-    public function show($item_id)
+    public function show(Request $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
         $purchase = Purchase::where('item_id', $item_id)
                             ->where('user_id', Auth::id())
                             ->first();
 
-        return view('purchase.show', compact('item', 'purchase', 'item_id'));
+        // クエリから支払い方法取得（例：credit, convenience）
+        $payment = $request->query('payment');
+
+        return view('purchase.show', compact('item', 'purchase', 'item_id', 'payment'));
     }
 
     public function store(Request $request, $item_id)
@@ -37,6 +40,7 @@ class PurchaseController extends Controller
         if (!$address) {
             return redirect()->back()->withErrors(['address' => '住所情報が設定されていません。']);
         }
+
         // Stripe APIキー設定
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -49,7 +53,7 @@ class PurchaseController extends Controller
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'jpy',
-                    'unit_amount' => $item->price, // 金額は円 × 100
+                    'unit_amount' => $item->price,
                     'product_data' => [
                         'name' => $item->name,
                     ],
@@ -61,7 +65,7 @@ class PurchaseController extends Controller
             'cancel_url' => url('/payment-cancel'),
         ]);
 
-        // 決済が完了してから保存するのが理想だが、先に仮登録（支払ステータス pending）
+        // 購入情報を仮登録（支払いステータス pending）
         DB::transaction(function () use ($item, $address, $request) {
             Purchase::create([
                 'user_id' => Auth::id(),

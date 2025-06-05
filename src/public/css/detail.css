@@ -53,12 +53,34 @@
     margin-top: 12px;
 }
 
-.img-star,
+.like-button {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.like-button.liked .img-star {
+    filter: brightness(200%) sepia(1) hue-rotate(-80deg) saturate(10) contrast(1.5);
+}
+
+
+.img-star {
+    margin-left: 5px;
+    width: 24px;
+    height: 24px;
+    filter: grayscale(0%) brightness(80%);
+}
+
+
 .img-speechballoon {
-    display: block;
-    width: 20px;
-    height: 20px;
-    margin-right: 6px;
+    margin: 0 0 10px 0;
+    width: 24px;
+    height: 24px;
+    filter: grayscale(100%) brightness(80%);
 }
 
 .like-count {
@@ -71,6 +93,7 @@
 }
 
 .comments-count {
+    margin: 2px 0 0 5px;
     background: none;
     border: none;
     font-size: 15px;
@@ -174,12 +197,30 @@ textarea.form-control {
 
 /* 画像データない場合 */
 .profile-placeholder {
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #d9d9d9;
     /* ネズミ色 */
     margin: 0 auto 10px;
+}
+
+
+/* プロフィール画像と名前の横並び */
+.profile-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* プロフィール画像のサイズ */
+.profile-image-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ccc;
 }
 
 /* ユーザー名 */

@@ -45,7 +45,7 @@
             <!-- 郵便番号 -->
             <div class="form-group">
                 <label for="postal_code">郵便番号</label>
-                <input type="text" name="postal_code" id="postal_code" class="form-control" value="{{ old('postal_code', $user->postal_code ?? '') }}">
+                <input type="text" name="postal_code" id="postal_code" class="form-control" value="{{ old('postal_code',  $address->postal_code ?? '') }}">
                 @error('postal_code')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -54,7 +54,7 @@
             <!-- 住所 -->
             <div class="form-group">
                 <label for="address">住所</label>
-                <input type="text" name="address" id="address" class="form-control" value="{{ old('address', $user->address ?? '') }}">
+                <input type="text" name="address" id="address" class="form-control" value="{{ old('address', $address->address ?? '') }}">
                 @error('address')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -63,7 +63,7 @@
             <!-- 建物名 -->
             <div class="form-group">
                 <label for="building_name">建物名</label>
-                <input type="text" name="building_name" id="building_name" class="form-control" value="{{ old('building_name', $user->building_name ?? '') }}">
+                <input type="text" name="building_name" id="building_name" class="form-control" value="{{ old('building_name', $address->building_name ?? '') }}">
                 @error('building_name')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror

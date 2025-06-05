@@ -10,15 +10,16 @@
 
     <!-- 切り替えボタン -->
     <div class="toggle-buttons">
-        <a href="{{ route('items.index') }}"
-           class="toggle-button {{ ($activeTab ?? 'recommend') === 'recommend' ? 'active' : '' }}">
-           おすすめ
+        <a href="{{ route('items.index', ['tab' => 'recommend', 'query' => request('query')]) }}"
+        class="toggle-button {{ ($activeTab ?? 'recommend') === 'recommend' ? 'active' : '' }}">
+            おすすめ
         </a>
-        <a href="{{ route('items.mylist') }}"
-           class="toggle-button {{ ($activeTab ?? 'recommend') === 'mylist' ? 'active' : '' }}">
-           マイリスト
+        <a href="{{ route('items.index', ['tab' => 'mylist', 'query' => request('query')]) }}"
+        class="toggle-button {{ ($activeTab ?? 'recommend') === 'mylist' ? 'active' : '' }}">
+            マイリスト
         </a>
     </div>
+
 
     <!-- メッセージ表示 -->
     @if (!empty($message))
@@ -40,7 +41,7 @@
                     </a>
                     <div class="item-details">
                         <p class="item-price">¥{{ number_format($item->price) }}</p>
-                        @if ($item->issold())
+                        @if ($item->is_sold)
                             <p class="item-sold">Sold</p>
                         @endif
                     </div>

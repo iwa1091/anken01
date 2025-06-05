@@ -61,7 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     /** 
-     * ユーザーは複数の住所（Addresses）を持つ
+     * ユーザーは複数の住所（address）を持つ
      */
     public function addresses()
     {

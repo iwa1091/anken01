@@ -22,7 +22,7 @@
                     @if (request()->route()->getName() !== 'register')
                         <!-- 検索フォーム -->
                         <li class="header__list-item">
-                            <form action="{{ route('items.search') }}" method="GET">
+                            <form action="{{ route('items.index') }}" method="GET">
                                 <input class="header__form--search" type="text" name="query" placeholder="なにをお探しですか？" value="{{ request('query') }}">
                             </form>
                         </li>
